@@ -1,0 +1,9 @@
+name: Widescreen
+description: 16:9 menus and gameplay.
+author: Nemesis2000
+
+[default.xbe]
+# Two conditional branches (the 4:3 aspect ratio guard) replaced with
+# unconditional jumps. Addresses are for the NTSC disc (USA, cert v2).
+0x00295D58: EB 15 F3 0F
+0x00295D90: EB 15 F3 0F
