@@ -1,0 +1,11 @@
+name: 120 fps
+description: Races at 120 frames a second (on a 120 Hz screen) instead of 30. Each frame takes one 120 Hz vblank, and the race steps 1/120 s a frame; a frame the device doesn't finish in time shows late, and the race slows down with it. Use it instead of the 60 fps mod, not with it.
+author: hakuX
+refresh: 120
+
+[default.xbe]
+# The vblanks a race frame takes: the PresentInterval setting (0x291A04),
+# as the 60 fps mod. The race steps vblanks / refresh_rate seconds a frame
+# (0x4860F1, 0x48614B; 0xD9073, 0xEFE91...): with refresh at 120 Hz and
+# interval 1, that is 1/120 s, the same formula the 60 fps mod gives at 60 Hz.
+0x00291A04: 02 -> 01
