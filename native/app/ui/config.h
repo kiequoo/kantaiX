@@ -34,9 +34,9 @@ int cfg_all(const Config *c, const char *key, const char **out, int max);
 void cfg_add(Config *c, const char *key, const char *val);
 void cfg_remove_value(Config *c, const char *key, const char *val);
 
-/* Where the emulator keeps its data (xbased.ini, hdd, states, games/,
+/* Where the emulator keeps its data (kantaiX.ini, hdd, states, games/,
  * covers/): beside the executable (Windows, or a portable.txt there), else
- * the user's data folder (Linux: ~/.local/share/hakuX). Ends in a separator. */
+ * the user's data folder (Linux: ~/.local/share/kantaiX). Ends in a separator. */
 const char *cfg_data_dir(void);
 /* Beside the executable (fonts, mods). */
 const char *cfg_exe_dir(void);
