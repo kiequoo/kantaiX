@@ -1402,7 +1402,7 @@ int dash_run(SDL_Window *win, const char *exe)
     g_cursor_at = 0;
     snprintf(D.exe, sizeof(D.exe), "%s", exe);
     char p[1200];
-    snprintf(p, sizeof(p), "%sxbased.ini", cfg_data_dir());
+    snprintf(p, sizeof(p), "%skantaiX.ini", cfg_data_dir());
     cfg_load(&D.global, p);
     if (upscale_migrate(&D.global)) {
         cfg_save(&D.global);
@@ -1689,7 +1689,7 @@ int dash_ingame(SDL_Window *win, const char *key, const char *title, const char 
     SDL_HideCursor();   /* it shows when the mouse moves (poll_input) */
     g_cursor_at = 0;
     char p[1200];
-    snprintf(p, sizeof(p), "%sxbased.ini", cfg_data_dir());
+    snprintf(p, sizeof(p), "%skantaiX.ini", cfg_data_dir());
     cfg_load(&D.global, p);
     if (upscale_migrate(&D.global)) {
         cfg_save(&D.global);
