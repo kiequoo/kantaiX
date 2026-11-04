@@ -46,6 +46,8 @@ No BIOS, MCPX ROM or hard disk image is needed.
 - **A page per game**: play, load a state, settings, patches, controls.
 - **Memory manager**: your games' saves with their icons; export, import and
   delete.
+- **Import from xemu**: xemu's saves copied in and re-signed so games accept
+  them (Memory, Y).
 - **Broad compatibility** with many games, inherited from hakuX.
 
 </td>
@@ -104,7 +106,7 @@ No BIOS, MCPX ROM or hard disk image is needed.
    [Releases](https://github.com/kiequoo/kantaiX/releases/latest), `chmod +x`
    it and run it.
 2. The dashboard opens. Go to **Settings › Interface › Add folder** and pick the
-   folder with your disc images.
+   folder with your disc images (or **Add a game file** for a single image).
 3. Choose a game in **Games**. Box art downloads automatically.
 
 **Command line:** `kantaiX <image.iso> [options]` starts a game directly.
