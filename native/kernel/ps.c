@@ -18,7 +18,6 @@
  *   KPCR: NT_TIB (ExceptionList 0x00, StackBase 0x04, StackLimit 0x08),
  *     PRCB at 0x28 starting with CurrentThread
  */
-#include <stdlib.h>
 #include "native/kernel/kernel.h"
 
 #include <stdio.h>
@@ -307,14 +306,6 @@ NcThread *nc_ps_kernel_thread(NcKernel *k, uint32_t stack_size, int priority)
  * (60: 20 ms; XSetProcessQuantumLength writes it). */
 static uint64_t quantum_ns(NcKernel *k)
 {
-    static int over = -1;   /* debug: NC_QUANTUM_US=<us> for every thread */
-    if (over < 0) {
-        const char *e = getenv("NC_QUANTUM_US");
-        over = e ? atoi(e) : 0;
-    }
-    if (over > 0) {
-        return (uint64_t)over * 1000u;
-    }
     const uint32_t q = k->kprocess ? nc_vm_rd32(k->vm, k->kprocess + KP_QUANTUM) : 0;
     return (uint64_t)(q ? q : 60) * 1000000u / 3;
 }
@@ -329,12 +320,9 @@ void nc_ps_slice_end(NcKernel *k, uint64_t now)
     if (!cur || cur != k->slice_thread || cur->state != NC_T_RUNNING) {
         return; /* an ISR or a DPC runs: the slice ends once its thread is back */
     }
-    if (cur->boost) {
-        cur->boost--;   /* NT's quantum end: a step of its wait boost */
-    }
     for (unsigned i = 0; i < k->threads_hi; i++) {
         const NcThread *t = &k->threads[i];
-        if (t != cur && t->state == NC_T_READY && !t->suspend && nc_thread_prio(t) >= nc_thread_prio(cur)) {
+        if (t != cur && t->state == NC_T_READY && !t->suspend && t->priority >= cur->priority) {
             /* the back of its priority's queue (nc_ps_schedule), a new quantum */
             cur->slice_expired = true;
             k->resched = true;
@@ -441,8 +429,8 @@ void nc_ps_schedule(NcKernel *k, NcFrame *f)
                 if (!t->ready_seq) {
                     t->ready_seq = ++k->ready_clock;    /* ready since the last pass */
                 }
-                if (!next || nc_thread_prio(t) > nc_thread_prio(next) ||
-                    (nc_thread_prio(t) == nc_thread_prio(next) && t->ready_seq < next->ready_seq)) {
+                if (!next || t->priority > next->priority ||
+                    (t->priority == next->priority && t->ready_seq < next->ready_seq)) {
                     next = t;
                 }
             }

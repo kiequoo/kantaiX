@@ -11,8 +11,8 @@
 struct ANativeWindow;
 
 /* A frame smaller than its place in the window: scaled up bilinearly, or by
- * AMD FidelityFX Super Resolution 1 (a larger one is always averaged down). */
-enum { HLE_UPSCALE_BILINEAR, HLE_UPSCALE_FSR };
+ * Snapdragon Game Super Resolution (a larger one is always averaged down). */
+enum { HLE_UPSCALE_BILINEAR, HLE_UPSCALE_SGSR };
 
 /* This refresh would put up what win already shows (the same front frame,
  * gamma ramp, window and swapchain, and key: the caller's placement and
@@ -36,7 +36,6 @@ bool hle_present_frame(uint32_t *w, uint32_t *h);
  * false samples a frame larger than its place bilinearly too (comparisons).
  * key: what hle_present_unchanged compares next. */
 void hle_present_end(float sx, float sy, bool fxaa, int upscale, bool average, uint64_t key);
-
 /* A picture of the next refresh that goes through, as the window shows it,
  * written to path (a BMP) on the window's thread. */
 void hle_present_shot(const char *path);

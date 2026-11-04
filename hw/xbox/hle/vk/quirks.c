@@ -6,7 +6,7 @@
 
 #include "hw/xbox/hle/hle.h"
 
-#if defined(__ANDROID__) || defined(_WIN32) || defined(NC_DESKTOP)
+#ifdef __ANDROID__
 #include <sys/system_properties.h>
 #include "hw/xbox/hle/prop.h"
 #endif
@@ -287,7 +287,7 @@ void hle_quirks_init(VkPhysicalDevice phys)
 
 void hle_quirks_poll(void)
 {
-#if defined(__ANDROID__) || defined(_WIN32) || defined(NC_DESKTOP)
+#ifdef __ANDROID__
     static char last[PROP_VALUE_MAX];
     static uint32_t polls;
     if (polls++ % 30) {

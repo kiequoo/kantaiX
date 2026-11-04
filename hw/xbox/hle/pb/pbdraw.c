@@ -2812,7 +2812,7 @@ static void state(void)
  * skinning mode and the first two attributes' formats (position, weights) */
 static void drawlog(const HleCmdDraw *d, bool ff)
 {
-#if defined(__ANDROID__) || defined(_WIN32) || defined(NC_DESKTOP)
+#ifdef __ANDROID__
     static HleProp prop;
     static unsigned polls;
     char v[PROP_VALUE_MAX];

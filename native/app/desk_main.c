@@ -9,7 +9,7 @@
  * With no disc image, a file dialog asks for one. Options are the Android
  * app's arguments: the core's (native/core/options.h: scale=, loadstate=,
  * video=, lang=, net=, mods=, uncap, ...), the window's (aspect=auto|4:3|
- * 16:9|stretch, fxaa=0|1, upscale=bilinear|fsr), and
+ * 16:9|stretch, fxaa=0|1, upscale=bilinear|sgsr), and
  *   hdd=DIR      the hard disk folder (default: hdd beside the executable)
  *   mod=ID       a mod of the game's on (its folder in mods\<TITLE ID>.<version>
  *                beside the executable; mod=* all of them), cheat=NAME a cheat
@@ -313,8 +313,8 @@ static void run_again(const char *extra)
 
 static void *core_thread(void *arg)
 {
-    nc_win_thread_name("vcpu");
-    nc_win_thread_priority(1);
+    nc_desk_thread_name("vcpu");
+    nc_desk_thread_priority(1);
     if (!nc_core_boot(&g_core, g_disc_fd)) {
         nc_log("kantaiX", "core: boot failed");
         if (!nc_hle_fatal()) {
@@ -583,7 +583,7 @@ static void ingame_menu(SDL_Window *win, bool *paused, bool minimized)
             nc_present_set_fxaa(atoi(v) != 0);
         }
         if ((v = cfg_get(c, "upscale"))) {
-            nc_present_set_upscale(nc_upscale_from_name(v));
+            nc_present_set_upscale(!strcmp(v, "sgsr") ? NC_UPSCALE_SGSR : NC_UPSCALE_BILINEAR);
         }
         if ((v = cfg_get(c, "crt"))) {
             hle_present_set_crt(atoi(v));
@@ -805,7 +805,7 @@ int main(int argc, char *argv[])
         } else if (!strncmp(a, "fxaa=", 5)) {
             nc_present_set_fxaa(atoi(a + 5) != 0);
         } else if (!strncmp(a, "upscale=", 8)) {
-            nc_present_set_upscale(nc_upscale_from_name(a + 8));
+            nc_present_set_upscale(!strcmp(a + 8, "sgsr") ? NC_UPSCALE_SGSR : NC_UPSCALE_BILINEAR);
         } else if (!strncmp(a, "crt=", 4)) {
             hle_present_set_crt(atoi(a + 4));
         } else if (!strncmp(a, "volume=", 7)) {
@@ -818,7 +818,6 @@ int main(int argc, char *argv[])
         }
     }
     nc_desk_mods_prepare(g_exe_dir, g_disc_fd, g_args, g_nargs);
-    SDL_HideCursor();   /* the game doesn't use the mouse; the menu may have shown it */
     nc_options_apply(&opt);
     g_uncap = opt.uncap;
     nc_present_set_widescreen(opt.video >= 0 && (opt.video & NC_VIDEO_WIDESCREEN));
@@ -866,7 +865,7 @@ int main(int argc, char *argv[])
     pthread_create(&core, &attr, core_thread, NULL);
     pthread_attr_destroy(&attr);
 
-    nc_win_thread_name("window");
+    nc_desk_thread_name("window");
     bool quit = false, paused = false, minimized = false, focused = true, told = false;
     while (!quit) {
         SDL_Event ev;
@@ -893,7 +892,7 @@ int main(int argc, char *argv[])
                 } else if (ev.key.key == g_map.hotkey[IM_HK_LOAD]) {
                     load_state(ev.key.mod & SDL_KMOD_SHIFT ? 2 : 1);
                 } else if (ev.key.key == g_map.hotkey[IM_HK_TURBO]) {
-                    nc_win_prop_set("debug.hakux.uncap", "1");  /* frames as fast as they come, while held */
+                    nc_desk_prop_set("debug.hakux.uncap", "1");  /* frames as fast as they come, while held */
                 } else if (ev.key.key == g_map.hotkey[IM_HK_SHOT]) {
                     screenshot();
                 } else if (ev.key.key == g_map.hotkey[IM_HK_MENU]) {
@@ -902,7 +901,7 @@ int main(int argc, char *argv[])
                 break;
             case SDL_EVENT_KEY_UP:
                 if (ev.key.key == g_map.hotkey[IM_HK_TURBO]) {
-                    nc_win_prop_set("debug.hakux.uncap", g_uncap ? "1" : "0");
+                    nc_desk_prop_set("debug.hakux.uncap", g_uncap ? "1" : "0");
                 }
                 break;
             case SDL_EVENT_GAMEPAD_BUTTON_DOWN: {
@@ -949,7 +948,7 @@ int main(int argc, char *argv[])
                     static bool pad_turbo;
                     if (want != pad_turbo) {
                         pad_turbo = want;
-                        nc_win_prop_set("debug.hakux.uncap", pad_turbo ? "1" : (g_uncap ? "1" : "0"));
+                        nc_desk_prop_set("debug.hakux.uncap", pad_turbo ? "1" : (g_uncap ? "1" : "0"));
                     }
                 }
                 break;
