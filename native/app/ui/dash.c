@@ -339,14 +339,10 @@ static void poll_input(void)
             case SDL_GAMEPAD_BUTTON_DPAD_DOWN: held(2, down); if (down) press(2); break;
             case SDL_GAMEPAD_BUTTON_DPAD_LEFT: held(3, down); if (down) press(3); break;
             case SDL_GAMEPAD_BUTTON_DPAD_RIGHT: held(4, down); if (down) press(4); break;
-            case SDL_GAMEPAD_BUTTON_SOUTH:
-                if (cfg_bool(&D.global, "ui.swapab", false)) in->back |= down; else in->ok |= down; break;
-            case SDL_GAMEPAD_BUTTON_EAST:
-                if (cfg_bool(&D.global, "ui.swapab", false)) in->ok |= down; else in->back |= down; break;
-            case SDL_GAMEPAD_BUTTON_WEST:
-                if (cfg_bool(&D.global, "ui.swapab", false)) in->y |= down; else in->x |= down; break;
-            case SDL_GAMEPAD_BUTTON_NORTH:
-                if (cfg_bool(&D.global, "ui.swapab", false)) in->x |= down; else in->y |= down; break;
+            case SDL_GAMEPAD_BUTTON_SOUTH: in->ok |= down; break;
+            case SDL_GAMEPAD_BUTTON_EAST: in->back |= down; break;
+            case SDL_GAMEPAD_BUTTON_WEST: in->x |= down; break;
+            case SDL_GAMEPAD_BUTTON_NORTH: in->y |= down; break;
             case SDL_GAMEPAD_BUTTON_LEFT_SHOULDER: in->lb |= down; break;
             case SDL_GAMEPAD_BUTTON_RIGHT_SHOULDER: in->rb |= down; break;
             case SDL_GAMEPAD_BUTTON_START: in->start |= down; break;
@@ -527,8 +523,6 @@ void draw_button_glyph(float x, float y, int which, float size)
     static const char *const k_pad[4] = {"A", "B", "X", "Y"};
     static const char *const k_key[4] = {"Enter", "Esc", "Del", "Tab"};
     if (D.in.pad) {
-        /* when A/B–X/Y are swapped, the glyph shows the physical button that
-         * now performs each action (0↔1 for A/B, 2↔3 for X/Y) */
         const int gi = cfg_bool(&D.global, "ui.swapab", false) ? (which ^ 1) : which;
         ui_circle(x + size / 2, y + size / 2, size / 2, k_col[gi]);
         ui_glow(x + size / 2, y + size / 2, size, ui_alpha(k_col[gi], 0.35f));
@@ -1462,7 +1456,7 @@ int dash_run(SDL_Window *win, const char *exe)
     g_cursor_at = 0;
     snprintf(D.exe, sizeof(D.exe), "%s", exe);
     char p[1200];
-    snprintf(p, sizeof(p), "%sxbased.ini", cfg_data_dir());
+    snprintf(p, sizeof(p), "%skantaiX.ini", cfg_data_dir());
     cfg_load(&D.global, p);
     if (upscale_migrate(&D.global)) {
         cfg_save(&D.global);
@@ -1746,7 +1740,7 @@ int dash_ingame(SDL_Window *win, const char *key, const char *title, const char 
     SDL_HideCursor();   /* it shows when the mouse moves (poll_input) */
     g_cursor_at = 0;
     char p[1200];
-    snprintf(p, sizeof(p), "%sxbased.ini", cfg_data_dir());
+    snprintf(p, sizeof(p), "%skantaiX.ini", cfg_data_dir());
     cfg_load(&D.global, p);
     if (upscale_migrate(&D.global)) {
         cfg_save(&D.global);

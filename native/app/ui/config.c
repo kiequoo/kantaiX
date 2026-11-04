@@ -206,7 +206,7 @@ const char *cfg_data_dir(void)
      * Documents) let nothing be created there: the hdd, a game's cache and
      * saves failed, and games showed their disc error. Then the user's own
      * application data folder. */
-    snprintf(probe, sizeof(probe), "%s.xbased-write-test", exe);
+    snprintf(probe, sizeof(probe), "%s.kantaiX-write-test", exe);
     SDL_IOStream *t = SDL_IOFromFile(probe, "wb");
     const bool writable = t && SDL_WriteIO(t, "x", 1) == 1;
     if (t) {
@@ -216,7 +216,7 @@ const char *cfg_data_dir(void)
     if (writable) {
         snprintf(dir, sizeof(dir), "%s", exe);
     } else {
-        char *p = SDL_GetPrefPath("", "xbased");
+        char *p = SDL_GetPrefPath("", "kantaiX");
         snprintf(dir, sizeof(dir), "%s", p ? p : exe);
         SDL_free(p);
     }
@@ -224,7 +224,7 @@ const char *cfg_data_dir(void)
     if (SDL_GetPathInfo(probe, NULL)) {
         snprintf(dir, sizeof(dir), "%s", exe);
     } else {
-        char *p = SDL_GetPrefPath("", "xbased");
+        char *p = SDL_GetPrefPath("", "kantaiX");
         snprintf(dir, sizeof(dir), "%s", p ? p : exe);
         SDL_free(p);
     }
