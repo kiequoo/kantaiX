@@ -54,7 +54,7 @@ Clang-format (`.clang-format` at repo root) for C/C++. C11 for C, C++20 for C++.
 
 ## PR workflow
 
-Always create a fresh branch off `master` for each piece of work and open a PR — never push directly to master, and never stack commits onto an existing unrelated branch. CI must pass before merging.
+Always create a fresh branch off `master` for each piece of work and open a PR — never push directly to master, and never stack commits onto an existing unrelated branch. CI must pass before merging. Exception: changes to `CLAUDE.md` only may be pushed directly to master.
 
 Commit messages and PR titles use conventional commits: `feat:`, `fix:`, `refactor:`, `ci:`, `docs:`, `chore:`. Example: `feat: swap A/B–X/Y toggle in dashboard UI`.
 
