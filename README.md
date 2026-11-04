@@ -77,7 +77,7 @@ No BIOS, MCPX ROM or hard disk image is needed.
 
 ### Save states & in-game menu
 - **10 save-state slots per game**, with pictures.
-- **In-game menu** with F1, or **Back + Start** / the **Guide** button on a
+- **In-game menu** with F1, or **Select + R3** / the **Guide** button on a
   gamepad: states, settings, controls, restart, back to the dashboard.
 - **Shortcuts**: F5 quick save, F8 quick load, Tab fast forward, F2 pause,
   F12 screenshot, F11 full screen; all configurable.
@@ -121,9 +121,22 @@ and `games/<TITLE ID>.<version>.ini` (per game) in `~/.local/share/xbased/`.
 | Left / right trigger | 1 / 3 | D-pad | Arrow keys |
 | Start / Back | Enter / Backspace | Stick clicks | F / H |
 
-**Shortcuts:** F1 menu, F5 quick save, F8 quick load (Shift: slot 2), Tab fast
-forward (hold), F2 pause, F12 screenshot, F11 full screen. On a gamepad,
-Back + Start or the Guide button opens the menu.
+**Keyboard shortcuts:** F1 menu, F5 quick save, F8 quick load (Shift: slot 2),
+Tab fast forward (hold), F2 pause, F12 screenshot, F11 full screen; all
+configurable in Settings › Controls › Shortcuts.
+
+**Gamepad shortcuts (Select = Back button, held as modifier):**
+
+| Combo | Action |
+|---|---|
+| Select + Start | Quit game |
+| Select + R3 | In-game menu |
+| Select + R1 | Quick save (slot 1) |
+| Select + L1 | Quick load (slot 1) |
+| Select + Y | Screenshot |
+| Select + R2 | Fast-forward (hold) |
+| Select + L3 | Pause |
+| Guide button | In-game menu |
 
 ## Building
 
