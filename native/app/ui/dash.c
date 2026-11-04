@@ -281,10 +281,14 @@ static void poll_input(void)
             case SDL_GAMEPAD_BUTTON_DPAD_DOWN: held(2, down); if (down) press(2); break;
             case SDL_GAMEPAD_BUTTON_DPAD_LEFT: held(3, down); if (down) press(3); break;
             case SDL_GAMEPAD_BUTTON_DPAD_RIGHT: held(4, down); if (down) press(4); break;
-            case SDL_GAMEPAD_BUTTON_SOUTH: in->ok |= down; break;
-            case SDL_GAMEPAD_BUTTON_EAST: in->back |= down; break;
-            case SDL_GAMEPAD_BUTTON_WEST: in->x |= down; break;
-            case SDL_GAMEPAD_BUTTON_NORTH: in->y |= down; break;
+            case SDL_GAMEPAD_BUTTON_SOUTH:
+                if (cfg_bool(&D.global, "ui.swapab", false)) in->back |= down; else in->ok |= down; break;
+            case SDL_GAMEPAD_BUTTON_EAST:
+                if (cfg_bool(&D.global, "ui.swapab", false)) in->ok |= down; else in->back |= down; break;
+            case SDL_GAMEPAD_BUTTON_WEST:
+                if (cfg_bool(&D.global, "ui.swapab", false)) in->y |= down; else in->x |= down; break;
+            case SDL_GAMEPAD_BUTTON_NORTH:
+                if (cfg_bool(&D.global, "ui.swapab", false)) in->x |= down; else in->y |= down; break;
             case SDL_GAMEPAD_BUTTON_LEFT_SHOULDER: in->lb |= down; break;
             case SDL_GAMEPAD_BUTTON_RIGHT_SHOULDER: in->rb |= down; break;
             case SDL_GAMEPAD_BUTTON_START: in->start |= down; break;
@@ -339,6 +343,11 @@ static void poll_input(void)
     if (g_rep_dir && ui_time() >= g_rep_at) {
         press(g_rep_dir);
         g_rep_at = ui_time() + 0.09;
+    }
+    /* show gamepad glyphs whenever a controller is connected; fall back to
+     * keyboard glyphs only when nothing is plugged in */
+    for (int i = 0; i < 8; i++) {
+        if (g_pads[i]) { in->pad = true; break; }
     }
 }
 
@@ -460,9 +469,12 @@ void draw_button_glyph(float x, float y, int which, float size)
     static const char *const k_pad[4] = {"A", "B", "X", "Y"};
     static const char *const k_key[4] = {"Enter", "Esc", "Del", "Tab"};
     if (D.in.pad) {
-        ui_circle(x + size / 2, y + size / 2, size / 2, k_col[which]);
-        ui_glow(x + size / 2, y + size / 2, size, ui_alpha(k_col[which], 0.35f));
-        ui_text(x + size / 2, y + size * 0.06f, k_pad[which], size * 0.8f, UI_FONT_BOLD, UI_WHITE, UI_ALIGN_CENTER);
+        /* when A/B–X/Y are swapped, the glyph shows the physical button that
+         * now performs each action (0↔1 for A/B, 2↔3 for X/Y) */
+        const int gi = cfg_bool(&D.global, "ui.swapab", false) ? (which ^ 1) : which;
+        ui_circle(x + size / 2, y + size / 2, size / 2, k_col[gi]);
+        ui_glow(x + size / 2, y + size / 2, size, ui_alpha(k_col[gi], 0.35f));
+        ui_text(x + size / 2, y + size * 0.06f, k_pad[gi], size * 0.8f, UI_FONT_BOLD, UI_WHITE, UI_ALIGN_CENTER);
     } else {
         const float w = ui_text_width(k_key[which], size * 0.62f, UI_FONT_BOLD) + size * 0.6f;
         ui_round(x, y + size * 0.08f, w, size * 0.84f, 5, ui_alpha(UI_WHITE, 0.9f));

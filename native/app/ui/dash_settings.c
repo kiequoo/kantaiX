@@ -229,6 +229,7 @@ void scr_settings(void)
             }
         }
         opt_bool(&l, S_RUMBLE, "rumble", true, false);
+        opt_bool(&l, S_SWAP_AB, "ui.swapab", false, false);
         break;
     case 5:
         for (int h = 0; h < IM_HOTKEYS; h++) {
